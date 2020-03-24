@@ -1,17 +1,29 @@
 import React from 'react';
-
+import Server from './backend'
 const Persons = ({persons,filter}) => {
 	return (
 		<div>
 			{
-				persons.filter(({name}) => name.toLowerCase().includes(filter)).map(
+				(persons.length > 0) ? (
+						persons.filter(({name}) => name.toLowerCase().includes(filter)).map(
+							(
+								{name,number,id}
+							) =>
+								<div key={name}>
+									{name} {number}
+									<button onClick={() => {
+										if (window.confirm(`delete ${name} ?`)) {
+											Server.deleteOne(id)
+										}
+									}}>
+										delete
+									</button>
+								</div>
+						)
+				) :
 					(
-						{name,number}
-					) =>
-						<div>
-							{name} {number}
-						</div>
-				)
+						<div>loading or no person!</div>
+					)
 			}
 		</div>
 	);

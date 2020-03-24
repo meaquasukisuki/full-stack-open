@@ -1,0 +1,13 @@
+$color1:red;
+$color2:green;
+
+.message {
+  color: $color2;
+  padding: 20px;
+  background-color: grey;
+}
+
+.error {
+  color: $color1;
+}
+
