@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState} from 'react';
 import Filter from "./Components/Filter";
 import PersonForm from "./Components/PersonForm";
 import Server from "./Components/backend";
@@ -21,7 +21,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
   const [message, setMessage] = useState("");
-  
+  const [messageClassName, setMessageClassName] = useState("");
   
   const handleNameChange = (event) => {
     const {value} = event.target;
@@ -39,7 +39,7 @@ const App = () => {
   };
   
   
-  let messageClassName = "";
+  
   
   const handleClick = (event) => {
     event.preventDefault();
@@ -48,8 +48,8 @@ const App = () => {
         return person.name === newName;
       }
     );
-    
-    if(duplicatePersons.length) {
+  
+    if (duplicatePersons.length) {
       const personToUpdate = duplicatePersons[0];
       const replace = window.confirm(`replace ${personToUpdate.name} with new number?`);
       if (replace) {
@@ -59,55 +59,61 @@ const App = () => {
             setPersons(persons.map((person) => {
                 if (person.id === newPerson.id) {
                   return newPerson;
-                }else {
+                } else {
                   return person;
                 }
               }
             ))
           });
-          
+        
           setMessage(`has replaced ${personToUpdate.name}'s number with ${newNumber}`);
           setTimeout(() => {
             setMessage("");
-          },5000);
-          
-          messageClassName = "";
+          }, 5000);
+        
+          setMessageClassName("");
           alert("replaced!")
-        }catch (e) {
-          messageClassName = "error";
-          
-          setMessage(`error message: ${e.message} !`)
+        } catch (e) {
+          setMessageClassName("error");
+        
+          setMessage(`error message: ${e.message} !`);
           setTimeout(() => {
             setMessage("")
-          },5000)
-          
-        }
+          }, 5000)
         
+        }
+      
       }
-    }
-    else {
+    } else {
       const newPerson = {
-        name:newName,
-        number:newNumber
+        name: newName,
+        number: newNumber
       };
       try {
-        setPersons([...persons,newPerson]);
-        Server.addPhoneNumber(newPerson);
-        messageClassName = "";
+        if (newPerson.name.length < 3 || newPerson.number < 8) {
+          throw Error("name length < 3 or number length < 8!!")
+        } else {
+          setPersons([...persons, newPerson]);
+          Server.addPhoneNumber(newPerson);
+          setMessageClassName("");
         
-        setMessage(`added new Person ${newPerson.name}`);
+          setMessage(`added new Person ${newPerson.name}`);
+          setTimeout(() => {
+            setMessage("");
+          }, 5000);
+        }
+      
+      } catch (e) {
+        setMessageClassName("error");
+        setMessage(e.message);
         setTimeout(() => {
-          setMessage("");
-        },5000);
-        
-      }catch (e) {
-        messageClassName = "error";
-        console.log(e.message)
+          setMessage("")
+        }, 5000)
       }
     }
-    
-    
   };
+    
+  
   
   return (
     <div>
